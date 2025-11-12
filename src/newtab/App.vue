@@ -87,6 +87,7 @@ import { getUserWorkflows } from '@/utils/api';
 import dataMigration from '@/utils/dataMigration';
 import { MessageListener } from '@/utils/message';
 import { getWorkflowPermissions } from '@/utils/workflowData';
+import storageManager from '@/utils/StorageManager';
 import { useHead } from '@vueuse/head';
 import { compare } from 'compare-versions';
 import { reactive, ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
@@ -363,12 +364,24 @@ onBeforeUnmount(() => {
 // Initialize stores for web app
 (async () => {
   try {
+    // BONUS FIX: Initialize StorageManager FIRST
+    await storageManager.initialize();
+    console.log('[App] ✅ StorageManager initialized');
+
     // Set electron-app class if running in Electron
     if (window.electron?.isElectron) {
       document.documentElement.classList.add('electron-app');
     }
 
-    // Load basic settings
+    // CRITICAL FIX #2: Clear stale cache before loading stores
+    // This prevents workflows from "vanishing" after app crashes
+    if (window.electron?.isElectron) {
+      browser.storage.local.invalidateCache();
+      browser.storage.sync.invalidateCache();
+      console.log('[App] ✅ Storage cache cleared for fresh session');
+    }
+
+    // Load basic settings (NOW SAFE - cache is fresh)
     await Promise.allSettled([
       store.loadSettings(),
       workflowStore.loadData(),

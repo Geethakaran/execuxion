@@ -40,6 +40,12 @@ const api = {
       ipcRenderer.on('storage:changed', listener);
       return () => ipcRenderer.removeListener('storage:changed', listener);
     },
+    // Cache coherency: Detect main process restarts
+    onMainProcessReady: (callback) => {
+      const listener = (event, data) => callback(data);
+      ipcRenderer.on('main-process-ready', listener);
+      return () => ipcRenderer.removeListener('main-process-ready', listener);
+    },
   },
 
   // File system operations

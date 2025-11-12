@@ -13,7 +13,8 @@ export default class BrowserAPIService {
   static cookies = browser.cookies;
   static debugger = browser.debugger;
   static webRequest = browser.webRequest;
-  static extension = browser.extension; // Add extension API
+  static extension = browser.extension;
+  static webNavigation = browser.webNavigation; // Add webNavigation API
 
   static async executeScript() { return null; }
   static async sendMessage() { return null; }

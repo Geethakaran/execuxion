@@ -118,12 +118,31 @@ function exportFolderWorkflows(folderId) {
     exportWorkflow(workflow);
   });
 }
+// Performance: Cache highlighted element to avoid redundant DOM operations
+// dragover fires 60-120 times/sec, but we only need to highlight once
+let currentHighlightedFolder = null;
+
 function onDragover(event, toggle) {
   const parent = event.target.closest('.ui-list-item');
   if (!parent) return;
 
   event.preventDefault();
-  parent.classList.toggle('ring-2', toggle);
+
+  // Optimization: Only modify DOM if state actually changed
+  if (toggle && parent !== currentHighlightedFolder) {
+    // Remove previous highlight
+    if (currentHighlightedFolder) {
+      currentHighlightedFolder.classList.remove('ring-2');
+    }
+    // Add new highlight
+    parent.classList.add('ring-2');
+    currentHighlightedFolder = parent;
+  } else if (!toggle && parent === currentHighlightedFolder) {
+    // Remove highlight on dragleave
+    parent.classList.remove('ring-2');
+    currentHighlightedFolder = null;
+  }
+  // If already in correct state, do nothing (avoid DOM mutation)
 }
 function newFolder() {
   dialog.prompt({
@@ -172,12 +191,12 @@ async function onWorkflowsDrop({ dataTransfer }, folderId) {
   if (!ids || !Array.isArray(ids)) return;
 
   try {
-    for (const id of ids) {
-      await workflowStore.update({
-        id,
-        data: { folderId },
-      });
-    }
+    // Performance: Batch update all workflows in one operation instead of loop
+    // This reduces N storage writes to 1 storage write
+    await workflowStore.update({
+      id: (workflow) => ids.includes(workflow.id),
+      data: { folderId },
+    });
   } catch (error) {
     console.error(error);
   }

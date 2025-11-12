@@ -88,7 +88,58 @@ function convertWorkflowsToObject(workflows) {
     }, {});
   }
 
-  return workflows;
+  // FIX: Unwrap any nested "workflows" keys (corruption from storage bug)
+  let unwrapped = workflows;
+  let unwrapCount = 0;
+  const maxUnwrapAttempts = 10;  // Safety limit to prevent infinite loops
+
+  while (unwrapped && typeof unwrapped === 'object' &&
+         unwrapped.workflows && typeof unwrapped.workflows === 'object' &&
+         unwrapCount < maxUnwrapAttempts) {
+
+    const keys = Object.keys(unwrapped);
+    const hasWorkflowsKey = keys.includes('workflows');
+
+    // Check if the 'workflows' value is actually a workflow object (has 'id' field)
+    const workflowsValue = unwrapped.workflows;
+    const isActualWorkflow = workflowsValue.id && typeof workflowsValue.id === 'string';
+
+    if (isActualWorkflow) {
+      // This 'workflows' key is actually a workflow with id='workflows', not a wrapper
+      break;
+    }
+
+    const hasOnlyWorkflowsKey = keys.length === 1;
+
+    if (hasOnlyWorkflowsKey) {
+      // Pure wrapper: { workflows: {...} }
+      console.log('[WorkflowStore] 🔧 Unwrapping nested workflows layer', unwrapCount + 1);
+      unwrapped = unwrapped.workflows;
+      unwrapCount++;
+    } else {
+      // Mixed: { workflows: {...}, "wf-id-1": {...}, "wf-id-2": {...} }
+      // This is corruption - merge the nested workflows with the root level
+      console.log('[WorkflowStore] 🔧 Merging corrupted mixed-level workflows');
+      const { workflows: nested, ...rootWorkflows } = unwrapped;
+
+      // Recursively unwrap the nested part
+      const unwrappedNested = convertWorkflowsToObject(nested);
+
+      // Merge (root workflows take precedence to preserve newest data)
+      unwrapped = { ...unwrappedNested, ...rootWorkflows };
+      break;  // Done unwrapping
+    }
+  }
+
+  if (unwrapCount > 0) {
+    console.log(`[WorkflowStore] ✅ Unwrapped ${unwrapCount} levels of nesting`);
+  }
+
+  if (unwrapCount >= maxUnwrapAttempts) {
+    console.error('[WorkflowStore] ⚠️ Hit max unwrap limit - possible infinite nesting');
+  }
+
+  return unwrapped || {};
 }
 
 export const useWorkflowStore = defineStore('workflow', {
@@ -131,7 +182,38 @@ export const useWorkflowStore = defineStore('workflow', {
       }
 
       this.isFirstTime = isFirstTime;
+
+      // Store original for comparison (detect if unwrapping occurred)
+      const originalStructure = JSON.stringify(localWorkflows);
+
+      // Convert and unwrap any nested corruption
       this.workflows = convertWorkflowsToObject(localWorkflows);
+
+      // Check if convertWorkflowsToObject unwrapped anything
+      const newStructure = JSON.stringify(this.workflows);
+      const wasUnwrapped = originalStructure !== newStructure;
+
+      if (wasUnwrapped) {
+        console.log('[WorkflowStore] 🔧 MIGRATION: Detected and repaired nested workflows corruption');
+        console.log('[WorkflowStore] Original keys:', Object.keys(localWorkflows).slice(0, 5));
+        console.log('[WorkflowStore] Repaired keys:', Object.keys(this.workflows).slice(0, 5));
+        console.log('[WorkflowStore] Total workflows recovered:', Object.keys(this.workflows).length);
+
+        // Save repaired data immediately to prevent corruption from persisting
+        // Temporarily override retrieved flag to allow save
+        const tempRetrieved = this.retrieved;
+        this.retrieved = true;
+
+        try {
+          await this.saveToStorage('workflows');
+          console.log('[WorkflowStore] ✅ Migrated workflows saved successfully');
+        } catch (error) {
+          console.error('[WorkflowStore] ❌ Failed to save migrated workflows:', error);
+          // Continue anyway - we've at least repaired the in-memory state
+        } finally {
+          this.retrieved = tempRetrieved;
+        }
+      }
 
       this.retrieved = true;
     },

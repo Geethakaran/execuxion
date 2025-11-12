@@ -14,6 +14,14 @@ export function useEditorBlock(label) {
 
     const details = blocks[label];
 
+    // Handle missing block definitions gracefully (e.g., after custom blocks are removed)
+    if (!details) {
+      console.warn(`[EditorBlock] Block definition not found for: ${label}`);
+      block.details = { id: label, name: 'Unknown Block', description: 'Block definition missing' };
+      block.category = { name: 'Unknown', id: 'unknown' };
+      return;
+    }
+
     block.details = { id: label, ...details };
     block.category = categories[details.category];
   });
