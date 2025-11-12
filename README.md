@@ -97,6 +97,10 @@ AGPL-3.0 - see [LICENSE](LICENSE) for details.
 - [Discussions](https://github.com/execuxion/execuxion/discussions) - Questions
 - Email: contact@execuxion.com
 
+## Acknowledgments
+
+Built on the foundation of [Automa](https://github.com/AutomaApp/automa), adapted into a standalone desktop application with additional automation features.
+
 ---
 
 **Keywords:** automation, workflow, no-code, low-code, scraping, social-media, api-integration, desktop-app, electron, vue
