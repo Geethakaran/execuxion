@@ -87,7 +87,6 @@ import { getUserWorkflows } from '@/utils/api';
 import dataMigration from '@/utils/dataMigration';
 import { MessageListener } from '@/utils/message';
 import { getWorkflowPermissions } from '@/utils/workflowData';
-import automa from '@business';
 import { useHead } from '@vueuse/head';
 import { compare } from 'compare-versions';
 import { reactive, ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';

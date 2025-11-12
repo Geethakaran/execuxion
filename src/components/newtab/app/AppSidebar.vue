@@ -51,14 +51,15 @@
         </a>
       </router-link>
     </div>
-    <hr class="my-4 w-8/12" />
+    <!-- Element selector - removed -->
+    <!-- <hr class="my-4 w-8/12" />
     <button
       v-tooltip:right.group="$t('home.elementSelector.name')"
       class="focus:ring-0"
       @click="injectElementSelector"
     >
       <v-remixicon name="riFocus3Line" />
-    </button>
+    </button> -->
     <div class="grow"></div>
     <ui-popover
       v-if="userStore.user"

@@ -1,5 +1,4 @@
 import { toCamelCase } from '@/utils/helper';
-import customHandlers from '@business/blocks/backgroundHandler';
 
 const blocksHandler = import.meta.glob('./blocksHandler/handler*.js', { eager: true });
 const handlers = Object.keys(blocksHandler).reduce((acc, key) => {
@@ -11,8 +10,5 @@ const handlers = Object.keys(blocksHandler).reduce((acc, key) => {
 }, {});
 
 export default function () {
-  return {
-    ...handlers,
-    ...customHandlers(),
-  };
+  return handlers;
 }

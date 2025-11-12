@@ -137,7 +137,6 @@
   </div>
 </template>
 <script setup>
-import workflowParameters from '@business/parameters';
 import cloneDeep from 'lodash.clonedeep';
 import { nanoid } from 'nanoid/non-secure';
 import { reactive, watch } from 'vue';
@@ -156,8 +155,6 @@ const props = defineProps({
   hidePreferTab: Boolean,
 });
 const emit = defineEmits(['update', 'update:preferTab']);
-
-const customParameters = workflowParameters();
 
 const paramTypes = {
   string: {
@@ -195,7 +192,6 @@ const paramTypes = {
       required: false,
     },
   },
-  ...customParameters,
 };
 const paramTypesArr = Object.values(paramTypes)
   .filter((item) => item.id)
