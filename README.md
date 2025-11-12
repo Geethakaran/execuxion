@@ -51,14 +51,9 @@ npm run dev
 
 ### Example Workflow
 
-**Simple web scraper:**
-```
-New Tab → Get Text → Export Data
-```
-
 **Twitter automation:**
 ```
-Trigger → Twitter Like → Loop Data
+Trigger block → Twitter Like block → Repeat Task block
 ```
 
 ## Documentation
