@@ -1,6 +1,4 @@
-# Execuxion
-
-**Visual workflow automation for social media, web scraping, and API integration**
+# Execuxion - Social media automation, web scraping, and API integration
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/execuxion/execuxion/releases)
